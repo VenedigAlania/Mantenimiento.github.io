@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Consulta de Datos</title>
+
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
+<style>
+body { font-family: Arial, sans-serif; margin: 10px; }
+input { width: 100%; padding: 10px; font-size: 16px; margin-bottom: 10px; }
+table { width: 100%; border-collapse: collapse; }
+th, td { border: 1px solid #ccc; padding: 6px; font-size: 14px; }
+th { background: #f2f2f2; }
+</style>
+</head>
+
+<body>
+
+<input type="text" id="filtro" placeholder="Filtrar información...">
+
+<table id="tabla"></table>
+
+<script>
+const urlCSV = https://upcedupe-my.sharepoint.com/:x:/g/personal/u202016804_upc_edu_pe/IQBYs28elyeVT4OwhF2oO-FJATYqJdejPrKYCSGyjZLedcs??download=1;
+
+Papa.parse(urlCSV, {
+    download: true,
+    header: true,
+    complete: function (resultado) {
+        const datos = resultado.data;
+        const tabla = document.getElementById("tabla");
+
+        function render(filtro = "") {
+            tabla.innerHTML = "";
+
+            if (!datos.length) return;
+
+            tabla.insertRow().innerHTML =
+                Object.keys(datos[0]).map(h => `<th>${h}</th>`).join("");
+
+            datos.filter(fila =>
+                Object.values(fila).join(" ").toLowerCase().includes(filtro)
+            ).forEach(fila => {
+                tabla.insertRow().innerHTML =
+                    Object.values(fila).map(v => `<td>${v}</td>`).join("");
+            });
+        }
+
+        document.getElementById("filtro").addEventListener("input", e =>
+            render(e.target.value.toLowerCase())
+        );
+
+        render();
+    }
+});
+</script>
+
+</body>
+</html>
